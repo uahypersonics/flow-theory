@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "flow_theory"
+abstract: "Theoretical estimates for high-speed aerodynamics"
+type: software
+authors:
+  - family-names: "Hader"
+    given-names: "Christoph"
+    orcid: "https://orcid.org/0000-0002-0956-000X"
+repository-code: "https://github.com/uahypersonics/flow-theory"
+url: "https://uahypersonics.github.io/flow-theory"
+license: BSD-3-Clause
+keywords:
+  - aerodynamics
+  - hypersonics
+  - skin friction
+  - boundary layer
+  - computational fluid dynamics
