@@ -1,6 +1,6 @@
 """flow_theory — theoretical estimates for high-speed aerodynamics."""
 
-from importlib.metadata import version, PackageNotFoundError
+from importlib.metadata import PackageNotFoundError, version
 
 try:
     __version__ = version("flow-theory")
