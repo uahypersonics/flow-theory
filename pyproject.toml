@@ -29,7 +29,7 @@ dependencies = [
     "scipy>=1.10.0",
     "typer>=0.9.0",
     "flowstate>=0.6.0",
-    "similarity-bl>=0.2.0",
+    "similarity-bl>=0.5.2",
 ]
 
 [project.optional-dependencies]
