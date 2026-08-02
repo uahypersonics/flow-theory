@@ -3,10 +3,10 @@
 # --------------------------------------------------
 # site metadata
 # --------------------------------------------------
-site_name: flow_theory
+site_name: flow-theory
 site_url: https://uahypersonics.github.io/flow-theory
 site_author: Christoph Hader
-site_description: Theoretical estimates for high-speed aerodynamics.
+site_description: Theoretical estimates for high-speed aerodynamics
 
 # --------------------------------------------------
 # github repository
@@ -20,10 +20,75 @@ edit_uri: edit/main/docs/
 # --------------------------------------------------
 theme:
   name: material
+  variant: classic
   palette:
-    - scheme: default
-      primary: indigo
-      accent: indigo
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue grey
+      accent: blue grey
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue grey
+      accent: blue grey
+      toggle:
+        icon: material/weather-night
+        name: Switch to system preference
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - content.code.copy
+    - content.code.annotate
+    - content.action.edit
+    - content.action.view
+    - content.tabs.link
+
+# --------------------------------------------------
+# plugins
+# --------------------------------------------------
+plugins:
+  - search
+
+# --------------------------------------------------
+# markdown extensions
+# --------------------------------------------------
+markdown_extensions:
+  - footnotes
+  - pymdownx.highlight:
+      anchor_linenums: true
+      linenums: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - admonition
+  - pymdownx.details
+  - tables
+  - attr_list
+  - md_in_html
+
+# --------------------------------------------------
+# MathJax for LaTeX rendering
+# --------------------------------------------------
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
 
 # --------------------------------------------------
 # navigation
@@ -31,13 +96,36 @@ theme:
 nav:
   - Home: index.md
   - Installation: installation.md
-
-# --------------------------------------------------
-# plugins
-# --------------------------------------------------
-plugins:
-  - search
-  - mkdocstrings:
-      handlers:
-        python:
-          paths: [src]
+  - Theory:
+    - theory/index.md
+    - Skin Friction and Stanton Number:
+      - Overview: theory/cf_ch.md
+      - Laminar:
+        - Blasius: theory/cf_ch/blasius.md
+        - Eckert: theory/cf_ch/eckert_reference.md
+        - Similarity: theory/cf_ch/similarity.md
+      - Turbulent:
+        - Overview: theory/cf_ch/turbulent.md
+        - van Driest II: theory/cf_ch/van_driest_ii.md
+        - Spalding-Chi (1964): theory/cf_ch/spalding_chi_1964.md
+        - Sommer-Short: theory/cf_ch/sommer_short.md
+        - White-Christoph: theory/cf_ch/white_christoph.md
+    - Bow-Shock Standoff Distance: theory/shock_standoff.md
+    - Bow-Shock Shape: theory/shock_shape.md
+    - Entropy-Layer Swallowing: theory/entropy_swallowing.md
+    - Boundary-Layer Transition Correlations:
+      - Overview: theory/transition.md
+  - API Reference:
+    - api/index.md
+    - Boundary Layer: api/boundary_layer.md
+    - Shock Standoff: api/shock_standoff.md
+    - Shock Shape: api/shock_shape.md
+    - Entropy Swallowing: api/entropy_swallowing.md
+    - Transition: api/transition.md
+  - Validation and Verification:
+    - vnv/index.md
+    - Verification: vnv/verification/index.md
+    - Validation:
+      - vnv/validation/index.md
+      - Rotta (1966), blunt cone swallowing: vnv/validation/rotta_1966_blunt_cone_swallowing/index.md
+  - Nomenclature: nomenclature.md

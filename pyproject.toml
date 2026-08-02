@@ -24,16 +24,24 @@ classifiers = [
 ]
 keywords = ["aerodynamics", "hypersonics", "skin-friction", "boundary-layer", "cfd"]
 
-dependencies = []
+dependencies = [
+    "numpy>=1.24.0",
+    "scipy>=1.10.0",
+    "typer>=0.9.0",
+    "flow-state-calculator>=0.6.0",
+    "similarity-bl>=0.2.0",
+]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
     "ruff>=0.1.0",
-    "mkdocs-material>=9.0",
-    "mkdocstrings[python]>=0.24",
+    "zensical",
 ]
+
+[project.scripts]
+flow-theory = "flow_theory.cli.app:app"
 
 [project.urls]
 Homepage = "https://github.com/uahypersonics/flow-theory"
@@ -44,13 +52,16 @@ Documentation = "https://uahypersonics.github.io/flow-theory"
 where = ["src"]
 
 [tool.setuptools_scm]
+# version is read from git tags (e.g. v0.1.0 -> 0.1.0)
+# write the resolved version to a file so it works without a git repo (e.g. in Docker)
+write_to = "src/flow_theory/_version.py"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
 
 [tool.ruff]
-line-length = 100
+line-length = 88
 target-version = "py311"
 
 [tool.ruff.lint]
