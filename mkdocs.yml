@@ -98,7 +98,6 @@ nav:
   - Installation: installation.md
   - Theory:
     - theory/index.md
-    - Boundary-Layer Thickness: theory/boundary_layer_thickness.md
     - Skin Friction and Stanton Number:
       - Overview: theory/cf_ch.md
       - Laminar:
@@ -111,11 +110,18 @@ nav:
         - Spalding-Chi (1964): theory/cf_ch/spalding_chi_1964.md
         - Sommer-Short: theory/cf_ch/sommer_short.md
         - White-Christoph: theory/cf_ch/white_christoph.md
-    - Bow-Shock Standoff Distance: theory/shock_standoff.md
-    - Bow-Shock Shape: theory/shock_shape.md
-    - Entropy Layer: theory/entropy_layer.md
-    - Boundary-Layer Transition Correlations:
-      - Overview: theory/transition.md
+    - Boundary-Layer Correlations:
+      - Overview: theory/boundary_layer_correlations.md
+      - Boundary-Layer Thickness: theory/boundary_layer_thickness.md
+      - Transition Correlations: theory/transition.md
+    - Shocks:
+      - Overview: theory/shocks.md
+      - Shock Standoff Distance: theory/shock_standoff.md
+      - Shock Shape: theory/shock_shape.md
+    - Entropy Layer:
+      - Overview: theory/entropy_layer.md
+      - Entropy-Layer Swallowing: theory/entropy_layer_swallowing.md
+      - Entropy-Layer Thickness: theory/entropy_layer_thickness.md
   - API Reference:
     - api/index.md
     - Boundary-Layer Thickness: api/boundary_layer_thickness.md
