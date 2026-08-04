@@ -96,6 +96,10 @@ extra_javascript:
 nav:
   - Home: index.md
   - Installation: installation.md
+  - User Guide:
+    - Overview: user_guide/index.md
+    - Workflow: user_guide/workflow.md
+    - Configuration: user_guide/configuration.md
   - Theory:
     - theory/index.md
     - Skin Friction and Stanton Number:
@@ -122,6 +126,7 @@ nav:
       - Overview: theory/entropy_layer.md
       - Entropy-Layer Swallowing: theory/entropy_layer_swallowing.md
       - Entropy-Layer Thickness: theory/entropy_layer_thickness.md
+  - CLI Reference: cli_reference.md
   - API Reference:
     - api/index.md
     - Boundary-Layer Thickness: api/boundary_layer_thickness.md
@@ -136,4 +141,5 @@ nav:
     - Validation:
       - vnv/validation/index.md
       - Rotta (1966), blunt cone swallowing: vnv/validation/rotta_1966_blunt_cone_swallowing/index.md
+  - Examples: examples.md
   - Nomenclature: nomenclature.md
