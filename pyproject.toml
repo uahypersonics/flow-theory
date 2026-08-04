@@ -25,6 +25,7 @@ classifiers = [
 keywords = ["aerodynamics", "hypersonics", "skin-friction", "boundary-layer", "cfd"]
 
 dependencies = [
+    "gasdyn>=0.0.2",
     "numpy>=1.24.0",
     "scipy>=1.10.0",
     "typer>=0.9.0",

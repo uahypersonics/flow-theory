@@ -10,6 +10,10 @@ from importlib.metadata import PackageNotFoundError, version
 # --------------------------------------------------
 # package imports
 # --------------------------------------------------
+from flow_theory.boundary_layer import (
+    BoundaryLayerThicknessResult,
+    compute_boundary_layer_thickness,
+)
 from flow_theory.cf_ch import (
     cf_laminar,
     cf_turbulent,
@@ -17,13 +21,17 @@ from flow_theory.cf_ch import (
     ch_turbulent,
     compute_cf_ch,
 )
-from flow_theory.entropy_swallowing import (
+from flow_theory.entropy_layer import (
     entropy_layer_thickness,
     is_swallowed,
     swallowing_distance,
 )
-from flow_theory.shock_shape import shock_shape_billig, shock_shape_points
-from flow_theory.shock_standoff import standoff_blunt_cone, standoff_sphere
+from flow_theory.shock import (
+    ShockShapeResult,
+    ShockStandoffResult,
+    compute_shock_shape,
+    compute_shock_standoff,
+)
 from flow_theory.transition import (
     intermittency,
     n_factor,
@@ -52,9 +60,11 @@ except PackageNotFoundError:
 
 __all__ = [
     "__version__",
+    "BoundaryLayerThicknessResult",
     "cf_laminar",
     "cf_turbulent",
     "compute_cf_ch",
+    "compute_boundary_layer_thickness",
     "ch_laminar",
     "ch_turbulent",
     "entropy_layer_thickness",
@@ -62,10 +72,10 @@ __all__ = [
     "is_swallowed",
     "n_factor",
     "re_theta_onset",
-    "shock_shape_billig",
-    "shock_shape_points",
-    "standoff_blunt_cone",
-    "standoff_sphere",
+    "ShockShapeResult",
+    "ShockStandoffResult",
+    "compute_shock_shape",
+    "compute_shock_standoff",
     "swallowing_distance",
     "transition_blunt_delta_wing",
     "transition_x",

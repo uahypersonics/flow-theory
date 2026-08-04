@@ -1,9 +1,14 @@
 # Shock Standoff
 
 ```python
-from flow_theory import standoff_sphere, standoff_blunt_cone
+from flow_theory.shock import compute_shock_standoff
+
+result = compute_shock_standoff(
+    mach=6.0,
+    nose_radius=0.01,
+)
 ```
 
-::: flow_theory.shock_standoff.standoff_sphere
+::: flow_theory.shock.standoff.ShockStandoffResult
 
-::: flow_theory.shock_standoff.standoff_blunt_cone
+::: flow_theory.shock.standoff.compute_shock_standoff

@@ -5,18 +5,41 @@
 # --------------------------------------------------
 from __future__ import annotations
 
+from flow_theory.templates.template_boundary_layer_thickness import (
+    render_boundary_layer_thickness_section,
+)
 from flow_theory.templates.template_cf_ch import render_cf_ch_section
-from flow_theory.templates.template_swallowing import render_swallowing_section
+from flow_theory.templates.template_entropy_layer_estimate import (
+    render_entropy_layer_estimate_section,
+)
+from flow_theory.templates.template_entropy_layer_swallowing import (
+    render_entropy_layer_swallowing_section,
+)
+from flow_theory.templates.template_shock_shape import render_shock_shape_section
+from flow_theory.templates.template_shock_standoff import (
+    render_shock_standoff_section,
+)
 
 # --------------------------------------------------
 # section registry
 # --------------------------------------------------
 SECTION_RENDERERS = {
+    "boundary_layer_thickness": render_boundary_layer_thickness_section,
     "cf_ch": render_cf_ch_section,
-    "swallowing": render_swallowing_section,
+    "entropy_layer_estimate": render_entropy_layer_estimate_section,
+    "entropy_layer_swallowing": render_entropy_layer_swallowing_section,
+    "shock_standoff": render_shock_standoff_section,
+    "shock_shape": render_shock_shape_section,
 }
 
-SECTION_ORDER = ["cf_ch", "swallowing"]
+SECTION_ORDER = [
+    "boundary_layer_thickness",
+    "cf_ch",
+    "shock_standoff",
+    "shock_shape",
+    "entropy_layer_estimate",
+    "entropy_layer_swallowing",
+]
 
 # --------------------------------------------------
 # public API
@@ -25,7 +48,7 @@ def render_templates(preset: str) -> str:
     """Build full config text for a flow-theory init preset.
 
     Args:
-        preset: One of "cf_ch", "swallowing", or "all".
+        preset: One registered section name or "all".
 
     Returns:
         Full TOML template text.

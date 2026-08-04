@@ -1,9 +1,8 @@
 # Validation
 
-Validation cases compare `flow_theory` correlations against independent
-reference data to confirm the mathematical model represents physical
-reality.
+Validation cases are under development.
 
 | Case | Module | Reference |
 |---|---|---|
-| [Blunt cone entropy-layer swallowing](rotta_1966_blunt_cone_swallowing/index.md) | `entropy_swallowing` | Rotta (1966) |
+| [Bow-shock shape](billig_1967_shock_shape/index.md) | `shock` | Billig (1967) |
+| [Blunt cone entropy-layer swallowing](rotta_1966_blunt_cone_swallowing/index.md) | `entropy_layer.swallowing` | Rotta (1966) |

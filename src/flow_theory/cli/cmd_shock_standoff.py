@@ -1,4 +1,4 @@
-"""CLI handler for ``flow-theory shock-shape``."""
+"""CLI handler for ``flow-theory shock-standoff``."""
 
 # --------------------------------------------------
 # load necessary modules
@@ -10,14 +10,14 @@ from typing import Annotated
 
 import typer
 
-from flow_theory.config import ShockShapeConfig
-from flow_theory.runners import run_shock_shape
+from flow_theory.config import ShockStandoffConfig
+from flow_theory.runners import run_shock_standoff
 
 
 # --------------------------------------------------
-# main function for the 'shock-shape' cli command
+# main function for the shock-standoff command
 # --------------------------------------------------
-def cmd_shock_shape(
+def cmd_shock_standoff(
     flow_conditions: Annotated[
         Path,
         typer.Option(
@@ -31,45 +31,38 @@ def cmd_shock_shape(
     ],
     geometry: Annotated[
         str,
-        typer.Option("--geometry", help="Body geometry."),
+        typer.Option("--geometry", help="Nose geometry: sphere or cylinder."),
     ] = "sphere",
     method: Annotated[
         str,
-        typer.Option("--method", help="Shock-shape correlation."),
-    ] = "billig",
-    n_points: Annotated[
-        int,
-        typer.Option("--n-points", help="Number of shock-locus points."),
-    ] = 100,
-    lateral_extent: Annotated[
-        float | None,
         typer.Option(
-            "--lateral-extent",
-            help="Maximum lateral coordinate. Defaults to three nose radii.",
+            "--method",
+            help=(
+                "Shock-standoff correlation: ambrosio_wortman, "
+                "ambrosio_wortman_density_ratio, or serbin."
+            ),
         ),
-    ] = None,
+    ] = "ambrosio_wortman",
     output: Annotated[
         Path | None,
         typer.Option("--output", help="Optional Tecplot output path."),
     ] = None,
 ) -> None:
-    """Compute a detached bow-shock locus."""
+    """Compute a normal-shock standoff estimate."""
 
     try:
         # build the shared runner configuration
-        config = ShockShapeConfig(
+        config = ShockStandoffConfig(
             run=True,
             flow_conditions=flow_conditions,
             nose_radius=nose_radius,
             geometry=geometry,
             method=method,
-            n_points=n_points,
-            lateral_extent=lateral_extent,
             output=output,
         )
 
-        # run the shared shock-shape implementation
-        run_shock_shape(config)
+        # run the shared shock-standoff implementation
+        run_shock_standoff(config)
 
     except typer.Exit:
         raise

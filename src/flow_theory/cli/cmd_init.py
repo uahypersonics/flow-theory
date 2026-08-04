@@ -33,7 +33,11 @@ def cmd_init(
         typer.Option(
             "--preset",
             "-p",
-            help="Template preset: cf_ch, swallowing, or all.",
+            help=(
+                "Template preset: boundary_layer_thickness, cf_ch, "
+                "shock_standoff, shock_shape, entropy_layer_estimate, "
+                "entropy_layer_swallowing, or all."
+            ),
         ),
     ] = "all",
     force: Annotated[
@@ -48,7 +52,15 @@ def cmd_init(
     """Write starter config TOML for flow-theory run."""
 
     # define valid presets
-    valid_presets = {"cf_ch", "swallowing", "all"}
+    valid_presets = {
+        "all",
+        "boundary_layer_thickness",
+        "cf_ch",
+        "entropy_layer_estimate",
+        "entropy_layer_swallowing",
+        "shock_shape",
+        "shock_standoff",
+    }
 
     try:
         # normalize and validate preset input

@@ -14,12 +14,14 @@ from typing import Annotated
 import typer
 
 from .callbacks import verbose_callback, version_callback
+from .cmd_boundary_layer_thickness import cmd_boundary_layer_thickness
 from .cmd_cf_ch import cmd_cf_ch
+from .cmd_entropy_layer_estimate import cmd_entropy_layer_estimate
+from .cmd_entropy_layer_swallowing import cmd_entropy_layer_swallowing
 from .cmd_init import cmd_init
 from .cmd_run import cmd_run
 from .cmd_shock_shape import cmd_shock_shape
-from .cmd_standoff import cmd_standoff
-from .cmd_swallowing import cmd_swallowing
+from .cmd_shock_standoff import cmd_shock_standoff
 from .cmd_transition import cmd_transition
 
 # --------------------------------------------------
@@ -66,10 +68,26 @@ def callback(
 # --------------------------------------------------
 
 # single calculators (no init file) - rich_help_panel="Calculators"
-app.command(name="cf", no_args_is_help=True, rich_help_panel="Calculators")(cmd_cf_ch)
-app.command(name="standoff", no_args_is_help=True, rich_help_panel="Calculators")(cmd_standoff)
+app.command(
+    name="bl",
+    no_args_is_help=True,
+    rich_help_panel="Calculators",
+)(cmd_boundary_layer_thickness)
+app.command(name="cf/ch", no_args_is_help=True, rich_help_panel="Calculators")(cmd_cf_ch)
+app.command(
+    name="entropy-layer-estimate",
+    no_args_is_help=True,
+    rich_help_panel="Calculators",
+)(cmd_entropy_layer_estimate)
+app.command(
+    name="entropy-layer-swallowing",
+    no_args_is_help=True,
+    rich_help_panel="Calculators",
+)(cmd_entropy_layer_swallowing)
+app.command(name="shock-standoff", no_args_is_help=True, rich_help_panel="Calculators")(
+    cmd_shock_standoff
+)
 app.command(name="shock-shape", no_args_is_help=True, rich_help_panel="Calculators")(cmd_shock_shape)
-app.command(name="swallowing", no_args_is_help=True, rich_help_panel="Calculators")(cmd_swallowing)
 app.command(name="transition", no_args_is_help=True, rich_help_panel="Calculators")(cmd_transition)
 
 # workflow with init and run - rich_help_panel="Workflow"

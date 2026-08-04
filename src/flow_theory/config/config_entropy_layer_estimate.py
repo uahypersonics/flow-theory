@@ -1,0 +1,54 @@
+"""Configuration adapter for the [entropy_layer_estimate] workflow section."""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from pathlib import Path
+
+from .schema import ConfigNode, validate_section_keys
+
+_ALLOWED_KEYS = {"gamma", "mach", "nose_radius", "output", "run", "x"}
+_REQUIRED_KEYS = {"mach", "nose_radius", "run", "x"}
+
+
+@dataclass(slots=True, frozen=True)
+class EntropyLayerEstimateConfig:
+    """Validated inputs for an entropy-layer thickness estimate."""
+
+    run: bool
+    x: object
+    mach: object
+    nose_radius: object
+    gamma: float = 1.4
+    output: Path | None = None
+
+
+def parse_entropy_layer_estimate_config(
+    section: ConfigNode,
+) -> EntropyLayerEstimateConfig:
+    """Validate and convert an [entropy_layer_estimate] section."""
+
+    validate_section_keys(
+        section,
+        section_name="entropy_layer_estimate",
+        allowed_keys=_ALLOWED_KEYS,
+        required_keys=_REQUIRED_KEYS,
+    )
+
+    run_value = section.run
+    if not isinstance(run_value, bool):
+        raise ValueError("entropy_layer_estimate.run must be true or false")
+
+    gamma = float(getattr(section, "gamma", 1.4))
+    output_value = getattr(section, "output", None)
+    output = None if output_value is None else Path(str(output_value))
+
+    config = EntropyLayerEstimateConfig(
+        run=run_value,
+        x=section.x,
+        mach=section.mach,
+        nose_radius=section.nose_radius,
+        gamma=gamma,
+        output=output,
+    )
+    return config

@@ -5,36 +5,8 @@ import numpy as np
 import pytest
 
 from flow_theory.config import CfChConfig
-from flow_theory.config.point_sweep import point_sweep
 from flow_theory.config.schema import ConfigNode
 from flow_theory.runners import run_cf_ch
-
-
-def test_point_sweep_accepts_scalar() -> None:
-    values = point_sweep(1.5, key_name="cf_ch.x")
-
-    assert values.shape == (1,)
-    assert np.allclose(values, np.array([1.5], dtype=float))
-
-
-def test_point_sweep_supports_count_based_sweep() -> None:
-    values = point_sweep([0.1, 1.0, 5], key_name="cf_ch.x")
-
-    assert np.allclose(values, np.linspace(0.1, 1.0, 5, dtype=float))
-
-
-def test_point_sweep_supports_step_based_sweep() -> None:
-    values = point_sweep([0.1, 1.0, 0.2], key_name="cf_ch.x")
-
-    assert np.allclose(values, np.array([0.1, 0.3, 0.5, 0.7, 0.9, 1.0]))
-
-
-def test_point_sweep_rejects_invalid_values() -> None:
-    with pytest.raises(ValueError, match="non-negative"):
-        point_sweep(-0.1, key_name="cf_ch.x")
-
-    with pytest.raises(ValueError, match="greater than start"):
-        point_sweep([1.0, 1.0, 2], key_name="cf_ch.x")
 
 
 def test_cf_ch_config_resolves_scalar_x() -> None:

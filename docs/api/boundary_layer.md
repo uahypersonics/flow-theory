@@ -1,4 +1,4 @@
-# Boundary Layer
+# Skin Friction and Stanton Number
 
 ```python
 from flow_theory import cf_laminar, cf_turbulent, ch_laminar, ch_turbulent
