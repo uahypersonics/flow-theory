@@ -34,8 +34,9 @@ def run_shock_shape(config: ShockShapeConfig) -> None:
         nose_radius=config.nose_radius,
         geometry=config.geometry,
         method=config.method,
+        half_angle=config.half_angle,
         n_points=config.n_points,
-        lateral_extent=config.lateral_extent,
+        x_e=config.x_e,
     )
 
     # report and optionally write the result

@@ -12,7 +12,7 @@ import numpy as np
 
 from flow_theory.shock import ShockShapeResult, ShockStandoffResult
 
-from .tecplot_ascii import write_tecplot
+from .tecplot_ascii import TecplotFile, write_tecplot
 
 logger = logging.getLogger("flow-theory")
 
@@ -83,14 +83,15 @@ def write_shock_shape(
         logger.info("shock-shape output file is not configured; skipping file write")
         return
 
-    # write the sampled shock locus
-    values = np.column_stack([result.x, result.y])
-    zone_name = f"shock shape {result.geometry} {result.method}"
-    write_tecplot(
-        output,
-        title="flow_theory shock shape",
-        variables=["x", "y"],
-        zone_name=zone_name,
-        values=values,
-    )
+    # write both sampled zones: shock locus and body surface
+    shock_values = np.column_stack([result.x, result.y])
+    body_values = np.column_stack([result.body_x, result.body_y])
+    shock_zone_name = f"shock shape {result.geometry} {result.method}"
+    body_zone_name = f"body surface {result.geometry}"
+
+    # write both zones with one shared variable list
+    with TecplotFile(output, title="flow_theory shock shape", variables=["x", "y"]) as tecplot:
+        tecplot.write_zone(shock_zone_name, shock_values)
+        tecplot.write_zone(body_zone_name, body_values)
+
     logger.info("wrote %s", output)

@@ -15,6 +15,7 @@ from flow_state.io import write_json
 from flow_state.solvers import solve
 
 from flow_theory.cli.cmd_run import cmd_run
+from flow_theory.cli.cmd_shock_shape import cmd_shock_shape
 from flow_theory.config import (
     ConfigNode,
     ShockShapeConfig,
@@ -54,7 +55,7 @@ def test_parse_shock_workflow_configs() -> None:
                 "flow_conditions": "flow.json",
                 "nose_radius": 0.01,
                 "n_points": 51,
-                "lateral_extent": 0.05,
+                "x_e": 0.05,
             }
         )
     )
@@ -64,7 +65,7 @@ def test_parse_shock_workflow_configs() -> None:
     assert standoff.geometry == "cylinder"
     assert isinstance(shape, ShockShapeConfig)
     assert shape.n_points == 51
-    assert shape.lateral_extent == 0.05
+    assert shape.x_e == 0.05
 
 
 # --------------------------------------------------
@@ -164,6 +165,7 @@ run = true
 flow_conditions = "{flow_state_path}"
 nose_radius = 0.01
 n_points = 11
+x_e = 0.05
 output = "{shape_path}"
 """
     config_path.write_text(config_text, encoding="utf-8")
@@ -181,6 +183,73 @@ output = "{shape_path}"
         'ZONE T="shock standoff sphere serbin", I=1'
         in standoff_path.read_text(encoding="utf-8")
     )
-    assert 'ZONE T="shock shape sphere billig", I=11' in shape_path.read_text(
-        encoding="utf-8"
+    shape_text = shape_path.read_text(encoding="utf-8")
+    assert 'ZONE T="shock shape sphere billig", I=11' in shape_text
+    assert 'ZONE T="body surface sphere", I=11' in shape_text
+
+
+def test_shock_shape_config_cone_requires_x_e() -> None:
+    """Cone geometry config should fail when x_e is omitted."""
+
+    with pytest.raises(ValueError, match="x_e is required"):
+        parse_shock_shape_config(
+            ConfigNode(
+                {
+                    "run": True,
+                    "flow_conditions": "flow.json",
+                    "nose_radius": 0.01,
+                    "geometry": "cone",
+                    "method": "billig",
+                    "half_angle": 15.0,
+                    "n_points": 101,
+                }
+            )
+        )
+
+
+def test_cmd_shock_shape_accepts_config_path(tmp_path: Path) -> None:
+    """shock-shape command should run from a [shock_shape] config section."""
+
+    # build and write a complete freestream state
+    state = solve(
+        mach=6.0,
+        pres=101325.0,
+        temp=300.0,
+        gas=PerfectGas.air(),
     )
+    flow_state_path = tmp_path / "flow_state.json"
+    write_json(state, flow_state_path)
+
+    # build a dedicated shock-shape config file
+    shape_path = tmp_path / "shape.dat"
+    config_path = tmp_path / "flow_theory.toml"
+    config_text = f"""
+[shock_shape]
+run = true
+flow_conditions = "{flow_state_path}"
+nose_radius = 0.01
+geometry = "sphere"
+n_points = 11
+x_e = 0.05
+output = "{shape_path}"
+"""
+    config_path.write_text(config_text, encoding="utf-8")
+
+    # execute the command in config-file mode
+    try:
+        cmd_shock_shape(config=config_path)
+    except typer.Exit as error:
+        pytest.fail(f"shock-shape config mode exited unexpectedly: {error}")
+
+    # check the output was produced from config inputs
+    assert shape_path.exists()
+    shape_text = shape_path.read_text(encoding="utf-8")
+    assert 'ZONE T="shock shape sphere billig", I=11' in shape_text
+    assert 'ZONE T="body surface sphere", I=11' in shape_text
+
+
+def test_cmd_shock_shape_requires_direct_inputs_without_config() -> None:
+    """Direct shock-shape mode should fail when required direct inputs are missing."""
+
+    with pytest.raises(typer.Exit):
+        cmd_shock_shape()
