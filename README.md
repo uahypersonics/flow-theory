@@ -5,7 +5,7 @@ Theoretical estimates for high-speed aerodynamics.
 [![Test](https://github.com/uahypersonics/flow-theory/actions/workflows/test.yml/badge.svg)](https://github.com/uahypersonics/flow-theory/actions/workflows/test.yml)
 [![PyPI](https://img.shields.io/pypi/v/flow-theory)](https://pypi.org/project/flow-theory/)
 [![Docs](https://img.shields.io/badge/docs-zensical-blue)](https://uahypersonics.github.io/flow-theory/)
-[![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-≥3.11-blue.svg)](https://www.python.org/downloads/)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 

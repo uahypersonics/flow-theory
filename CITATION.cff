@@ -9,7 +9,7 @@ authors:
     orcid: "https://orcid.org/0000-0002-0956-000X"
 repository-code: "https://github.com/uahypersonics/flow-theory"
 url: "https://uahypersonics.github.io/flow-theory"
-license: BSD-3-Clause
+license: GPL-3.0-or-later
 keywords:
   - aerodynamics
   - hypersonics

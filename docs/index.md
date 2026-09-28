@@ -50,4 +50,6 @@ Using a label when opening an issue helps prioritize and track requests:
 
 ## License
 
-BSD-3-Clause. See [LICENSE](https://github.com/uahypersonics/flow-theory/blob/main/LICENSE) for details.
+GNU General Public License v3.0 or later. See
+[LICENSE](https://github.com/uahypersonics/flow-theory/blob/main/LICENSE) for the
+complete license terms.
