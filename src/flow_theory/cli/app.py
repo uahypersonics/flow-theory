@@ -14,15 +14,13 @@ from typing import Annotated
 import typer
 
 from .callbacks import verbose_callback, version_callback
-from .cmd_boundary_layer_thickness import cmd_boundary_layer_thickness
-from .cmd_cf_ch import cmd_cf_ch
-from .cmd_entropy_layer_estimate import cmd_entropy_layer_estimate
-from .cmd_entropy_layer_swallowing import cmd_entropy_layer_swallowing
-from .cmd_init import cmd_init
-from .cmd_run import cmd_run
-from .cmd_shock_shape import cmd_shock_shape
-from .cmd_shock_standoff import cmd_shock_standoff
-from .cmd_transition import cmd_transition
+from .cmd_boundary_layer_thickness import boundary_layer_app
+from .cmd_cf_ch import cf_ch_app
+from .cmd_entropy_layer_estimate import entropy_layer_estimate_app
+from .cmd_entropy_layer_swallowing import entropy_layer_swallowing_app
+from .cmd_shock_shape import shock_shape_app
+from .cmd_shock_standoff import shock_standoff_app
+from .cmd_transition import transition_app
 
 # --------------------------------------------------
 # app
@@ -34,6 +32,7 @@ app = typer.Typer(
     add_completion=False,
 )
 
+
 # --------------------------------------------------
 # callback for --version and --verbose options
 # version_callback and verbose_callback are defined in callbacks.py
@@ -44,7 +43,8 @@ def callback(
     version: Annotated[
         bool | None,
         typer.Option(
-            "--version", "-V",
+            "--version",
+            "-V",
             help="Show version and exit.",
             callback=version_callback,
             is_eager=True,
@@ -54,13 +54,12 @@ def callback(
     verbose: Annotated[
         bool,
         typer.Option(
-            "--verbose", "-v",
-            help="Enable verbose output.",
-            callback=verbose_callback
+            "--verbose", "-v", help="Enable verbose output.", callback=verbose_callback
         ),
     ] = False,
 ) -> None:
     """flow-theory: useful engineering correlations and theoretical estimates."""
+
 
 # --------------------------------------------------
 # register subcommands
@@ -68,31 +67,37 @@ def callback(
 # --------------------------------------------------
 
 # single calculators (no init file) - rich_help_panel="Calculators"
-app.command(
+app.add_typer(
+    boundary_layer_app,
     name="bl",
-    no_args_is_help=True,
     rich_help_panel="Calculators",
-)(cmd_boundary_layer_thickness)
-app.command(name="cf/ch", no_args_is_help=True, rich_help_panel="Calculators")(cmd_cf_ch)
-app.command(
-    name="entropy-layer-estimate",
-    no_args_is_help=True,
-    rich_help_panel="Calculators",
-)(cmd_entropy_layer_estimate)
-app.command(
-    name="entropy-layer-swallowing",
-    no_args_is_help=True,
-    rich_help_panel="Calculators",
-)(cmd_entropy_layer_swallowing)
-app.command(name="shock-standoff", no_args_is_help=True, rich_help_panel="Calculators")(
-    cmd_shock_standoff
 )
-app.command(name="shock-shape", no_args_is_help=True, rich_help_panel="Calculators")(cmd_shock_shape)
-app.command(name="transition", no_args_is_help=True, rich_help_panel="Calculators")(cmd_transition)
-
-# workflow with init and run - rich_help_panel="Workflow"
-app.command(name="init", rich_help_panel="Workflow")(cmd_init)
-app.command(name="run", rich_help_panel="Workflow")(cmd_run)
+app.add_typer(cf_ch_app, name="cf-ch", rich_help_panel="Calculators")
+app.add_typer(
+    entropy_layer_estimate_app,
+    name="entropy-layer-estimate",
+    rich_help_panel="Calculators",
+)
+app.add_typer(
+    entropy_layer_swallowing_app,
+    name="entropy-layer-swallowing",
+    rich_help_panel="Calculators",
+)
+app.add_typer(
+    shock_standoff_app,
+    name="shock-standoff",
+    rich_help_panel="Calculators",
+)
+app.add_typer(
+    shock_shape_app,
+    name="shock-shape",
+    rich_help_panel="Calculators",
+)
+app.add_typer(
+    transition_app,
+    name="transition",
+    rich_help_panel="Calculators",
+)
 
 # --------------------------------------------------
 # main entry point

@@ -7,17 +7,64 @@ from typing import Annotated
 
 import typer
 
-from flow_theory.config import EntropyLayerEstimateConfig
+from flow_theory.config import (
+    EntropyLayerEstimateConfig,
+    parse_entropy_layer_estimate_config,
+    read_config,
+)
 from flow_theory.runners import run_entropy_layer_estimate
 
+from .focused_config import write_focused_config
 
+entropy_layer_estimate_app = typer.Typer(
+    name="entropy-layer-estimate",
+    help="Entropy-layer thickness estimates.",
+    no_args_is_help=True,
+)
+
+
+@entropy_layer_estimate_app.command(name="init")
+def cmd_init_entropy_layer_estimate(
+    output: Annotated[
+        Path,
+        typer.Option("--output", "-o", help="Output TOML path."),
+    ] = Path("entropy_layer_estimate.toml"),
+    force: Annotated[
+        bool,
+        typer.Option("--force", "-f", help="Overwrite existing output file."),
+    ] = False,
+) -> None:
+    """Write a focused entropy-layer estimate configuration."""
+    try:
+        write_focused_config(
+            "entropy_layer_estimate",
+            output,
+            force,
+            "flow-theory entropy-layer-estimate run",
+        )
+    except (OSError, ValueError) as error:
+        typer.echo(f"error: {error}", err=True)
+        raise typer.Exit(1) from None
+
+
+@entropy_layer_estimate_app.command(name="run")
 def cmd_entropy_layer_estimate(
-    x: Annotated[float, typer.Option("--x", help="Streamwise station [m].")],
-    mach: Annotated[float, typer.Option("--mach", help="Edge Mach number.")],
+    config: Annotated[
+        Path | None,
+        typer.Option("--config", "--cfg", "-c", help="Config TOML path."),
+    ] = None,
+    x: Annotated[
+        float | None,
+        typer.Option("--x", help="Streamwise station [m]."),
+    ] = None,
+    mach: Annotated[
+        float | None,
+        typer.Option("--mach", help="Edge Mach number."),
+    ] = None,
     nose_radius: Annotated[
-        float,
+        float | None,
         typer.Option("--nose-radius", help="Nose radius [m]."),
-    ],
+    ] = None,
     gamma: Annotated[
         float,
         typer.Option("--gamma", help="Specific heat ratio."),
@@ -30,17 +77,40 @@ def cmd_entropy_layer_estimate(
     """Estimate entropy-layer thickness at one station."""
 
     try:
-        config = EntropyLayerEstimateConfig(
-            run=True,
-            x=float(x),
-            mach=float(mach),
-            nose_radius=float(nose_radius),
-            gamma=float(gamma),
-            output=output,
-        )
-        run_entropy_layer_estimate(config)
+        # select direct-option mode when any required direct input is supplied
+        use_direct_options = any(value is not None for value in (x, mach, nose_radius))
+
+        if use_direct_options:
+            if config is not None:
+                raise ValueError("--config cannot be combined with direct inputs")
+            if x is None or mach is None or nose_radius is None:
+                raise ValueError(
+                    "x, mach, and nose_radius are required unless --config is provided"
+                )
+
+            runner_config = EntropyLayerEstimateConfig(
+                x=float(x),
+                mach=float(mach),
+                nose_radius=float(nose_radius),
+                gamma=float(gamma),
+                output=output,
+            )
+        else:
+            config_path = (
+                Path("entropy_layer_estimate.toml") if config is None else config
+            )
+            cfg = read_config(config_path)
+            if not hasattr(cfg, "entropy_layer_estimate"):
+                raise ValueError(
+                    "Config file does not contain an [entropy_layer_estimate] section"
+                )
+            runner_config = parse_entropy_layer_estimate_config(
+                cfg.entropy_layer_estimate
+            )
+
+        run_entropy_layer_estimate(runner_config)
     except typer.Exit:
         raise
     except Exception as error:
         typer.echo(f"error: {error}", err=True)
-        raise typer.Exit(1)
+        raise typer.Exit(1) from None

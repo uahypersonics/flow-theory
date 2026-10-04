@@ -16,11 +16,48 @@ from flow_theory.config import (
     read_config,
 )
 from flow_theory.runners import run_shock_shape
+from flow_theory.templates import render_templates
+
+# --------------------------------------------------
+# shock-shape command group
+# --------------------------------------------------
+shock_shape_app = typer.Typer(
+    name="shock-shape",
+    help="Approximate detached bow-shock shape calculations.",
+    no_args_is_help=True,
+)
+
+
+@shock_shape_app.command(name="init")
+def cmd_init_shock_shape(
+    output: Annotated[
+        Path,
+        typer.Option("--output", "-o", help="Output TOML path."),
+    ] = Path("shock_shape.toml"),
+    force: Annotated[
+        bool,
+        typer.Option("--force", "-f", help="Overwrite existing output file."),
+    ] = False,
+) -> None:
+    """Write a focused shock-shape configuration."""
+    try:
+        if output.exists() and not force:
+            raise FileExistsError(f"output exists: {output} (use --force to overwrite)")
+
+        content = render_templates("shock_shape")
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(content, encoding="utf-8")
+        typer.echo(f"wrote {output}")
+        typer.echo(f"then run: flow-theory shock-shape run --config {output}")
+    except (OSError, ValueError) as error:
+        typer.echo(f"error: {error}", err=True)
+        raise typer.Exit(1) from None
 
 
 # --------------------------------------------------
 # main function for the 'shock-shape' cli command
 # --------------------------------------------------
+@shock_shape_app.command(name="run")
 def cmd_shock_shape(
     config: Annotated[
         Path | None,
@@ -28,7 +65,7 @@ def cmd_shock_shape(
             "--config",
             "--cfg",
             "-c",
-            help="Optional config TOML path. Uses [shock_shape] section when provided.",
+            help="Config TOML path. Defaults to shock_shape.toml when no direct inputs are provided.",
         ),
     ] = None,
     flow_conditions: Annotated[
@@ -79,18 +116,23 @@ def cmd_shock_shape(
     """Compute an approximate shock shape."""
 
     try:
-        # read and run from config-file section when a config path is provided
-        if config is not None:
-            cfg = read_config(config)
+        # use direct options whenever either required direct input is present
+        use_direct_options = flow_conditions is not None or nose_radius is not None
+
+        # read and run from the focused config when direct inputs are absent
+        if not use_direct_options:
+            config_path = Path("shock_shape.toml") if config is None else config
+            cfg = read_config(config_path)
 
             if not hasattr(cfg, "shock_shape"):
-                raise ValueError(
-                    "Config file does not contain a [shock_shape] section"
-                )
+                raise ValueError("Config file does not contain a [shock_shape] section")
 
             shock_shape_cfg = parse_shock_shape_config(cfg.shock_shape)
             run_shock_shape(shock_shape_cfg)
             return
+
+        if config is not None:
+            raise ValueError("--config cannot be combined with direct solver inputs")
 
         # validate required direct inputs when config path is not provided
         if flow_conditions is None:
@@ -100,7 +142,6 @@ def cmd_shock_shape(
 
         # get the typed configuration dataclass
         config = ShockShapeConfig(
-            run=True,
             flow_conditions=flow_conditions,
             nose_radius=nose_radius,
             geometry=geometry,

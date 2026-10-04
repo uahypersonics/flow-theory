@@ -6,7 +6,6 @@ def render_entropy_layer_estimate_section() -> str:
 
     lines = [
         "[entropy_layer_estimate]",
-        "run = true",
         "x = 0.1",
         "mach = 8.0",
         "nose_radius = 0.0254",

@@ -1,0 +1,153 @@
+"""Tests for calculator-scoped init and run commands."""
+
+from __future__ import annotations
+
+import logging
+from collections.abc import Iterator
+from pathlib import Path
+
+import pytest
+from typer.testing import CliRunner
+
+from flow_theory.cli.app import app
+
+runner = CliRunner()
+
+
+@pytest.fixture(autouse=True)
+def restore_flow_theory_logger() -> Iterator[None]:
+    """Restore logger state after each in-process CLI invocation."""
+
+    # save the logger state modified by the global CLI callback
+    logger = logging.getLogger("flow-theory")
+    original_level = logger.level
+    original_propagate = logger.propagate
+    original_handlers = list(logger.handlers)
+
+    yield
+
+    # close handlers created by the CLI and restore the original state
+    for handler in logger.handlers:
+        if handler not in original_handlers:
+            handler.close()
+    logger.handlers = original_handlers
+    logger.setLevel(original_level)
+    logger.propagate = original_propagate
+
+
+def test_root_global_init_and_run_are_not_registered() -> None:
+    """Independent calculators should not expose a global batch workflow."""
+    init_result = runner.invoke(app, ["init"])
+    run_result = runner.invoke(app, ["run"])
+
+    assert init_result.exit_code != 0
+    assert "No such command 'init'" in init_result.output
+    assert run_result.exit_code != 0
+    assert "No such command 'run'" in run_result.output
+
+
+def test_shock_shape_init_writes_focused_config() -> None:
+    """Shock-shape init should write one section without a run toggle."""
+    with runner.isolated_filesystem():
+        result = runner.invoke(app, ["shock-shape", "init"])
+        config_text = Path("shock_shape.toml").read_text(encoding="utf-8")
+
+        assert result.exit_code == 0
+        assert config_text.count("[shock_shape]") == 1
+        assert "run =" not in config_text
+        assert "[shock_standoff]" not in config_text
+
+
+def test_shock_shape_group_lists_init_and_run() -> None:
+    """Shock-shape should expose the common scoped command interface."""
+    result = runner.invoke(app, ["shock-shape", "--help"])
+
+    assert result.exit_code == 0
+    assert "init" in result.output
+    assert "run" in result.output
+
+
+def test_boundary_layer_init_writes_focused_config() -> None:
+    """Boundary-layer init should write one section without a run toggle."""
+    with runner.isolated_filesystem():
+        result = runner.invoke(app, ["bl", "init"])
+        config_text = Path("boundary_layer_thickness.toml").read_text(encoding="utf-8")
+
+        assert result.exit_code == 0
+        assert config_text.count("[boundary_layer_thickness]") == 1
+        assert "run =" not in config_text
+        assert "[cf_ch]" not in config_text
+
+
+def test_boundary_layer_group_lists_init_and_run() -> None:
+    """Boundary-layer should expose the common scoped command interface."""
+    result = runner.invoke(app, ["bl", "--help"])
+
+    assert result.exit_code == 0
+    assert "init" in result.output
+    assert "run" in result.output
+
+
+def test_flow_condition_calculators_have_scoped_workflows() -> None:
+    """Flow-condition calculators should generate focused configs and list commands."""
+    cases = [
+        ("cf-ch", "cf_ch.toml", "[cf_ch]"),
+        ("shock-standoff", "shock_standoff.toml", "[shock_standoff]"),
+    ]
+
+    with runner.isolated_filesystem():
+        for command, filename, section in cases:
+            init_result = runner.invoke(app, [command, "init"])
+            config_text = Path(filename).read_text(encoding="utf-8")
+            help_result = runner.invoke(app, [command, "--help"])
+
+            assert init_result.exit_code == 0
+            assert section in config_text
+            assert "run =" not in config_text
+            assert help_result.exit_code == 0
+            assert "init" in help_result.output
+            assert "run" in help_result.output
+
+
+def test_entropy_layer_calculators_have_scoped_workflows() -> None:
+    """Entropy-layer calculators should generate focused configs and list commands."""
+    cases = [
+        (
+            "entropy-layer-estimate",
+            "entropy_layer_estimate.toml",
+            "[entropy_layer_estimate]",
+        ),
+        (
+            "entropy-layer-swallowing",
+            "entropy_layer_swallowing.toml",
+            "[entropy_layer_swallowing]",
+        ),
+    ]
+
+    with runner.isolated_filesystem():
+        for command, filename, section in cases:
+            init_result = runner.invoke(app, [command, "init"])
+            config_text = Path(filename).read_text(encoding="utf-8")
+            help_result = runner.invoke(app, [command, "--help"])
+
+            assert init_result.exit_code == 0
+            assert section in config_text
+            assert "run =" not in config_text
+            assert help_result.exit_code == 0
+            assert "init" in help_result.output
+            assert "run" in help_result.output
+
+
+def test_transition_has_scoped_workflow() -> None:
+    """Transition should generate a focused config and list both commands."""
+    with runner.isolated_filesystem():
+        init_result = runner.invoke(app, ["transition", "init"])
+        config_text = Path("transition.toml").read_text(encoding="utf-8")
+        help_result = runner.invoke(app, ["transition", "--help"])
+
+        assert init_result.exit_code == 0
+        assert "[transition]" in config_text
+        assert "run =" not in config_text
+        assert help_result.exit_code == 0
+        assert "init" in help_result.output
+        assert "run" in help_result.output

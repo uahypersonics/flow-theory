@@ -13,7 +13,6 @@ def render_cf_ch_section() -> str:
         "# --------------------------------------------------",
         "[cf_ch]",
         "# toggle to enable/disable this section when running flow-theory",
-        "run = true",
         "# flow conditions file path (JSON) for this section",
         'flow_conditions = "flow_conditions.json"',
         "# x input options:",

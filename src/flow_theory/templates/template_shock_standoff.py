@@ -12,7 +12,6 @@ def render_shock_standoff_section() -> str:
         "# normal-shock standoff estimate",
         "# --------------------------------------------------",
         "[shock_standoff]",
-        "run = true",
         'flow_conditions = "flow_conditions.json"',
         '# geometry: "sphere" or "cylinder"',
         'geometry = "sphere"',

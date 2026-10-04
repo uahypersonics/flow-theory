@@ -6,7 +6,6 @@ def render_boundary_layer_thickness_section() -> str:
 
     lines = [
         "[boundary_layer_thickness]",
-        "run = true",
         "x = [0.1, 0.5, 1.0]",
         "re1 = 3.0e6",
         'method = "eckert_reference"',

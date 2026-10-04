@@ -18,6 +18,7 @@ from .config_shock_standoff import (
     ShockStandoffConfig,
     parse_shock_standoff_config,
 )
+from .config_transition import TransitionConfig, parse_transition_config
 from .read_config import find_config, read_config
 from .schema import ConfigNode
 
@@ -29,6 +30,7 @@ __all__ = [
     "EntropyLayerSwallowingConfig",
     "ShockShapeConfig",
     "ShockStandoffConfig",
+    "TransitionConfig",
     "find_config",
     "parse_boundary_layer_thickness_config",
     "parse_cf_ch_config",
@@ -36,5 +38,6 @@ __all__ = [
     "parse_entropy_layer_swallowing_config",
     "parse_shock_shape_config",
     "parse_shock_standoff_config",
+    "parse_transition_config",
     "read_config",
 ]

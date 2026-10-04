@@ -10,6 +10,7 @@ from flow_theory.runners.run_entropy_layer_swallowing import (
 )
 from flow_theory.runners.run_shock_shape import run_shock_shape
 from flow_theory.runners.run_shock_standoff import run_shock_standoff
+from flow_theory.runners.run_transition import run_transition
 
 __all__ = [
     "run_boundary_layer_thickness",
@@ -18,4 +19,5 @@ __all__ = [
     "run_entropy_layer_swallowing",
     "run_shock_shape",
     "run_shock_standoff",
+    "run_transition",
 ]

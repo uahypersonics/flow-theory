@@ -19,6 +19,7 @@ from flow_theory.templates.template_shock_shape import render_shock_shape_sectio
 from flow_theory.templates.template_shock_standoff import (
     render_shock_standoff_section,
 )
+from flow_theory.templates.template_transition import render_transition_section
 
 # --------------------------------------------------
 # section registry
@@ -30,6 +31,7 @@ SECTION_RENDERERS = {
     "entropy_layer_swallowing": render_entropy_layer_swallowing_section,
     "shock_standoff": render_shock_standoff_section,
     "shock_shape": render_shock_shape_section,
+    "transition": render_transition_section,
 }
 
 SECTION_ORDER = [
@@ -39,7 +41,9 @@ SECTION_ORDER = [
     "shock_shape",
     "entropy_layer_estimate",
     "entropy_layer_swallowing",
+    "transition",
 ]
+
 
 # --------------------------------------------------
 # public API
@@ -58,8 +62,7 @@ def render_templates(preset: str) -> str:
     lines = [
         "# flow-theory starter config",
         "#",
-        "# run with:",
-        "#   flow-theory run -c flow_theory.toml",
+        "# edit these values, then run the calculator's scoped run command",
         "#",
         "",
     ]

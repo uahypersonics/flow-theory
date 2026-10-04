@@ -6,7 +6,6 @@ def render_entropy_layer_swallowing_section() -> str:
 
     lines = [
         "[entropy_layer_swallowing]",
-        "run = true",
         "mach = 8.0",
         "re1 = 3.0e6",
         "nose_radius = 0.0254",
